@@ -28,6 +28,7 @@ public class TourEntity {
     private Date endTime;
     private String time;
     private String status;
+    
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
     @Column(name = "avatarTour", columnDefinition = "TEXT")
