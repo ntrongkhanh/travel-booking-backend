@@ -12,7 +12,7 @@ public class ScheduleEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private Date time;
-    @Column(name = "image", columnDefinition = "TEXT")
+    @Column(name = "place", columnDefinition = "TEXT")
     private String place;
     // tour id N 1@JsonBackReference
     @JsonIgnore

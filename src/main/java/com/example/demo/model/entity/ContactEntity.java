@@ -8,7 +8,7 @@ public class ContactEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    @Column(name = "image", columnDefinition = "TEXT")
+    @Column(name = "name", columnDefinition = "TEXT")
     private String name;
     private String email;
     private String phone;

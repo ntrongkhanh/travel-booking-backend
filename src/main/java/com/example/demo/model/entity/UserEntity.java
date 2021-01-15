@@ -11,6 +11,7 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+    @Column(name = "name", columnDefinition = "TEXT")
     private String name;
     private String username;
     private String phone;
