@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.model.LoginRequest;
+import com.example.demo.model.LoginResponse;
 import com.example.demo.model.entity.UserEntity;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.security.jwt.JwtUtils;
@@ -92,8 +93,8 @@ public class UserService {
             userEntityOptional.get().setToken(jwt);
             repository.save(userEntityOptional.get());
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-            Map<String, Object> response = new HashMap<>();
-            response.put("token", jwt);
+            LoginResponse response=new LoginResponse(userEntityOptional.get().getId(),userEntityOptional.get().getName(),
+                    userEntityOptional.get().getUsername(),userEntityOptional.get().getPhone(),userEntityOptional.get().getToken());
             return ResponseEntity.ok().body(response);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
