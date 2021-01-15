@@ -13,11 +13,16 @@ public class TourEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+    @Column(name = "image", columnDefinition = "TEXT")
     private String name;
     private String codeTour;
+    @Column(name = "image", columnDefinition = "TEXT")
     private String startPlace;
+    @Column(name = "image", columnDefinition = "TEXT")
     private String endPlace;
+    @Column(name = "image", columnDefinition = "TEXT")
     private String province;
+    @Column(name = "image", columnDefinition = "TEXT")
     private String national;
     private Date startTime;
     private Date endTime;

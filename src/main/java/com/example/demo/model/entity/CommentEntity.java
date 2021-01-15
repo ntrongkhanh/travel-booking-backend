@@ -13,6 +13,7 @@ public class CommentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+    @Column(name = "image", columnDefinition = "TEXT")
     private String content;
     private Date time;
 

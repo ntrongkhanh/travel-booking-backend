@@ -13,6 +13,7 @@ public class PriceEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private boolean isPrimary;
+    @Column(name = "image", columnDefinition = "TEXT")
     private String type;
     private long Price;
 
