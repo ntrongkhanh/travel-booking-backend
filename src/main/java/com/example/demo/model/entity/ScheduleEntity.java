@@ -1,6 +1,7 @@
 package com.example.demo.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -12,8 +13,8 @@ public class ScheduleEntity {
     private long id;
     private Date time;
     private String place;
-    // tour id N 1
-    @JsonBackReference
+    // tour id N 1@JsonBackReference
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "tour_id", nullable = true)
     private TourEntity tourEntity;

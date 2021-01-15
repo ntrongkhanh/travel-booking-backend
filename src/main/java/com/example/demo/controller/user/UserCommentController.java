@@ -18,12 +18,12 @@ public class UserCommentController {
 // tạo cmt
 
     @RequestMapping(value = "/create", headers = "Accept=application/json", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> create(@Validated @RequestBody CommentEntity dto) {
-        return null;
+    public ResponseEntity<?> create(@RequestHeader("Authorization") String token,@Validated @RequestBody CommentEntity dto) {
+        return ResponseEntity.ok("a");
     }
     // sửa cmmt
     @PutMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> update(@RequestBody PostsEntity dto)  {
-        return null;
+    public ResponseEntity<?> update(@RequestBody PostsEntity dto)  {
+        return ResponseEntity.ok("a");
     }
 }

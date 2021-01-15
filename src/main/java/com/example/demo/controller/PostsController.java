@@ -19,12 +19,12 @@ public class PostsController {
 
     // xem tất cả các post
     @GetMapping("/")
-    public ResponseEntity<Map<String, Object>> getAll() {
+    public ResponseEntity<?> getAll() {
         return service.getAll();
     }
     // xem 1 post cụ thể
     @GetMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> getById(@PathVariable(value = "id") long id) {
+    public ResponseEntity<?> getById(@PathVariable(value = "id") long id) {
         return service.getById(id);
     }
 }

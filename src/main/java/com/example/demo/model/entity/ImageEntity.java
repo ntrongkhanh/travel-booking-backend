@@ -15,13 +15,13 @@ public class ImageEntity {
     private String image;
     // tour id N 1
     @JsonIgnore
-    @JsonBackReference
+//    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "tour_id", nullable = true)
     private TourEntity tourEntity;
     // bài viết id N 1
     @JsonIgnore
-    @JsonBackReference
+//    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "posts_id", nullable = true)
     private PostsEntity postsEntity;

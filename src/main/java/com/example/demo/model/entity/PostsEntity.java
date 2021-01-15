@@ -17,7 +17,7 @@ public class PostsEntity {
     private int amount_like;
     private int amount_comment;
     private Date time;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "postsEntity")
     private List<CommentEntity> commentEntities;
     @OneToMany(mappedBy = "postsEntity")
@@ -121,10 +121,11 @@ public class PostsEntity {
     }
     public void addLike(UserEntity userEntity){
         this.userEntities.add(userEntity);
-        this.amount_comment++;
+        this.amount_like++;
     }
     public void disLike(UserEntity userEntity){
         this.userEntities.remove(userEntity);
-        this.amount_comment--;
+        this.amount_like--;
     }
+
 }

@@ -1,14 +1,14 @@
 package com.example.demo.service;
 
-import com.example.demo.model.entity.ContactEntity;
-import com.example.demo.model.entity.OrderTourEntity;
-import com.example.demo.model.entity.TourEntity;
+import com.example.demo.model.entity.*;
 import com.example.demo.repository.ContactRepository;
+import com.example.demo.repository.OrderDetailRepository;
 import com.example.demo.repository.OrderTourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.EntityManager;
 import java.util.HashMap;
@@ -24,57 +24,61 @@ public class OrderTourService {
     private ContactRepository contactRepository;
     @Autowired
     private EntityManager entityManager;
+    @Autowired
+    private OrderDetailRepository orderDetailRepository;
+
     // get all
-    public ResponseEntity<Map<String, Object>> getAll(long idUser) {
+    public ResponseEntity<?> getAll(long idUser) {
 
         try {
-            List<OrderTourEntity> orderTourEntities = orderTourRepository.findAll();
-            Map<String, Object> response = new HashMap<>();
-            response.put("data", orderTourEntities);
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            List<OrderTourEntity> orderTourEntities = orderTourRepository.findByUserEntity(idUser);
+            return ResponseEntity.ok().body(orderTourEntities);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     // get by id
-    public ResponseEntity<Map<String, Object>> getById(long id) {
+    public ResponseEntity<?> getById(long id) {
         try {
-            Optional<OrderTourEntity> orderTourEntity=orderTourRepository.findById(id);
-            Map<String, Object> response = new HashMap<>();
-            response.put("data", orderTourEntity);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e){
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            Optional<OrderTourEntity> orderTourEntity = orderTourRepository.findById(id);
+            return ResponseEntity.ok().body(orderTourEntity);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     // create
-    public ResponseEntity<Map<String, Object>> create(OrderTourEntity orderTourEntity,long idTour) {
+    public ResponseEntity<?> create(List<OrderDetailEntity> orderDetailList, ContactEntity contact, long idTour, long idUser) {
         try {
-            ContactEntity contactEntity=orderTourEntity.getContactEntity();
-            contactEntity=contactRepository.saveAndFlush(contactEntity);
+            OrderTourEntity orderTourEntity = new OrderTourEntity();
+            ContactEntity contactEntity = contact;
+            contactEntity = contactRepository.saveAndFlush(contactEntity);
             orderTourEntity.setContactEntity(contactEntity);
-            orderTourEntity=orderTourRepository.saveAndFlush(orderTourEntity);
-            
-
-
-            orderTourEntity.set
-            Map<String, Object> response = new HashMap<>();
-            response.put("data", userEntity);
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            if (idUser != 0) {
+                UserEntity userEntity = entityManager.getReference(UserEntity.class, idUser);
+                orderTourEntity.setUserEntity(userEntity);
+            }
+            orderTourEntity = orderTourRepository.saveAndFlush(orderTourEntity);
+            for (int i = 0; i < orderDetailList.size(); i++) {
+                orderDetailList.get(i).setOrderTourEntity(orderTourEntity);
+            }
+            orderDetailRepository.saveAll(orderDetailList);
+            Map<String, String> response = new HashMap<>();
+            response.put("status", "SUCCESS");
+            return ResponseEntity.ok().body(response);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     // update
-    public ResponseEntity<Map<String, Object>> update() {
+    public ResponseEntity<?> update() {
         return null;
     }
 
     // delete
-    public ResponseEntity<Map<String, Object>> delete() {
+    public ResponseEntity<?> delete() {
         return null;
     }
 }
