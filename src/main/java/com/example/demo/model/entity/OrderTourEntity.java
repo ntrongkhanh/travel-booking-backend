@@ -29,6 +29,12 @@ public class OrderTourEntity {
 //    @JoinColumn(name = "contact_id", nullable = true)
 //    private ContactEntity contactEntity;
 
+    @JsonIgnore
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "user_id", nullable = true)
+    private UserEntity userEntity;
+
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "contact_id", referencedColumnName = "id")
@@ -43,6 +49,14 @@ public class OrderTourEntity {
         this.orderDetailEntities = orderDetailEntities;
         this.tourEntity = tourEntity;
         this.contactEntity = contactEntity;
+    }
+
+    public UserEntity getUserEntity() {
+        return userEntity;
+    }
+
+    public void setUserEntity(UserEntity userEntity) {
+        this.userEntity = userEntity;
     }
 
     public long getId() {

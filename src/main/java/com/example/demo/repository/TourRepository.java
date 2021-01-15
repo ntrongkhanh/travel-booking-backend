@@ -11,19 +11,9 @@ import java.util.List;
 
 @Repository
 public interface TourRepository extends JpaRepository<TourEntity, Long> {
-    @Query(value = "select * from category c where c.name like %:name% and c.is_laptop=1", nativeQuery = true)
-    public List<TourEntity> getByName(@Param("name") String name);
-
-    //    @Query(value = "select * from tour t\n" +
-//            "where (t.name like %?1% r ?1 =null or ?1= ''  or ?1='string' )\n" +
-//            "\t\tand (t.province like %?2% or ?2 =null or ?2= ''  or ?2='string')\n" +
-//            "\t\tand (t.national like %?3% or ?3 =null or ?3= ''  or ?3='string')\n" +
-//            "\t\tand (t.start_place like %?4% or ?4 =null or ?4= ''  or ?4='string')\n" +
-//            //       "\t\tand (t.start_time like%?5 % or ?5 =null or ?5= ''  or ?5='string')\n" +
-//            "\t\tand (t.end_place like %?6% or ?6 =null or ?6= '' or ?6='string')\n" +
-//            //     "\t\tand (t.end_time like %?7% or ?7 =null or ?7= ''  or ?7='string')\n" +
-//            "\t\tand (t.time like %?8% or ?8 =null or ?8= ''  or ?8='string')"
-//            , nativeQuery = true)
+//    @Query(value = "select * from category c where c.name like %:name% and c.is_laptop=1", nativeQuery = true)
+//    public List<TourEntity> getByName(@Param("name") String name);
+//
     @Query(value = "select * from tour t\n" +
             "where ( ?1 is null or t.name like %?1% )\n"
             + "and ( ?2 is null  or t.province like %?2%)\n"
@@ -38,4 +28,6 @@ public interface TourRepository extends JpaRepository<TourEntity, Long> {
             , nativeQuery = true)
     public List<TourEntity> search(String name, String province, String national, String startPlace, String endPlace, String time ,Date startTime, Date endTime);
 //
+    @Query(value = "select * from tour, favorite as f where f.user_id=?1 and f.tour_id=tour.id",nativeQuery = true)
+    public List<TourEntity> getTourLike(long id);
 }

@@ -11,11 +11,12 @@ import java.util.Map;
 @RequestMapping("/api/user/favorite")
 public class FavoriteController {
     @GetMapping("/")
-    public ResponseEntity<Map<String, Object>> getAll() {
-        return null;
+    public ResponseEntity<?> getAll(@RequestHeader("Authorization") String token) {
+
+        return ResponseEntity.ok("a");
     }
-    @GetMapping("/like")
-    public ResponseEntity<Map<String, Object>> like() {
-        return null;
+    @GetMapping("/like/{id}")
+    public ResponseEntity<?> like(@RequestHeader("Authorization") String token,@PathVariable(value = "id") long idTour) {
+        return ResponseEntity.ok().body("a");
     }
 }

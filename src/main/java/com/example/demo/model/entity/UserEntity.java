@@ -12,8 +12,10 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String name;
-    private String email;
+    private String username;
     private String phone;
+    @JsonIgnore
+    private String token;
     private String password;
     @JsonIgnore
     @OneToMany(mappedBy = "userEntity")
@@ -32,19 +34,67 @@ public class UserEntity {
     @JoinTable(name = "like_post", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "comment_id"))
     private List<PostsEntity> likePosts;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "userEntity")
+    private List<OrderTourEntity> orderTourEntities;
+
+
     public UserEntity() {
+    }
+
+    public UserEntity(long id, String name, String email, String phone, String token, String password, List<PostsEntity> postsEntities, List<CommentEntity> commentEntities, List<TourEntity> tourEntities, List<PostsEntity> likePosts, List<OrderTourEntity> orderTourEntities) {
+        this.id = id;
+        this.name = name;
+        this.username = email;
+        this.phone = phone;
+        this.token = token;
+        this.password = password;
+        this.postsEntities = postsEntities;
+        this.commentEntities = commentEntities;
+        this.tourEntities = tourEntities;
+        this.likePosts = likePosts;
+        this.orderTourEntities = orderTourEntities;
     }
 
     public UserEntity(long id, String name, String email, String phone, String password, List<PostsEntity> postsEntities, List<CommentEntity> commentEntities, List<TourEntity> tourEntities, List<PostsEntity> likePosts) {
         this.id = id;
         this.name = name;
-        this.email = email;
+        this.username = email;
         this.phone = phone;
         this.password = password;
         this.postsEntities = postsEntities;
         this.commentEntities = commentEntities;
         this.tourEntities = tourEntities;
         this.likePosts = likePosts;
+    }
+
+    public UserEntity(long id, String name, String email, String phone, String password, List<PostsEntity> postsEntities, List<CommentEntity> commentEntities, List<TourEntity> tourEntities, List<PostsEntity> likePosts, List<OrderTourEntity> orderTourEntities) {
+        this.id = id;
+        this.name = name;
+        this.username = email;
+        this.phone = phone;
+        this.password = password;
+        this.postsEntities = postsEntities;
+        this.commentEntities = commentEntities;
+        this.tourEntities = tourEntities;
+        this.likePosts = likePosts;
+        this.orderTourEntities = orderTourEntities;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public List<OrderTourEntity> getOrderTourEntities() {
+        return orderTourEntities;
+    }
+
+    public void setOrderTourEntities(List<OrderTourEntity> orderTourEntities) {
+        this.orderTourEntities = orderTourEntities;
     }
 
     public long getId() {
@@ -63,12 +113,12 @@ public class UserEntity {
         this.name = name;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPhone() {
@@ -123,6 +173,13 @@ public class UserEntity {
     }
     public void disLikePosts(PostsEntity postsEntity){
         this.likePosts.remove(postsEntity);
+    }
+
+    public void addLikeTour(TourEntity tourEntity){
+        this.tourEntities.add(tourEntity);
+    }
+    public void disLikeTour(TourEntity tourEntity){
+        this.tourEntities.remove(tourEntity);
     }
 
 }

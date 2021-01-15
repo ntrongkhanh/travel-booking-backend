@@ -1,24 +1,27 @@
 package com.example.demo.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "order_detail")
 public class OrderDetailEntity {
-   @Id
-   @GeneratedValue(strategy = GenerationType.AUTO)
-   private long id;
-   private int amount;
-   private long price;
-   // order tour id N 1
-   @JsonBackReference
-   @ManyToOne(fetch = FetchType.LAZY, optional = true)
-   @JoinColumn(name = "order_tour_id", nullable = true)
-   private OrderTourEntity orderTourEntity;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+    private int amount;
+    private long price;
+    // order tour id N 1
+    @JsonIgnore
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "order_tour_id", nullable = true)
+    private OrderTourEntity orderTourEntity;
 
     // price id  N 1
+    @JsonIgnore
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "price_id", nullable = true)

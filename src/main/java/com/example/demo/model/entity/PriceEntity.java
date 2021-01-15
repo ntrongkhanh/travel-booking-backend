@@ -1,6 +1,7 @@
 package com.example.demo.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.List;
@@ -11,30 +12,47 @@ public class PriceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+    private boolean isPrimary;
     private String type;
-    private long basePrice;
     private long Price;
 
-    // tour id N 1
-    @JsonBackReference
+    // tour id N 1 @JsonBackReference
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "tour_id", nullable = true)
     private TourEntity tourEntity;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "priceEntity")
     private List<OrderDetailEntity> orderDetailEntities;
 
     public PriceEntity() {
     }
 
-    public PriceEntity(long id, String type, long basePrice, long price, TourEntity tourEntity,
-                       List<OrderDetailEntity> orderDetailEntities) {
+    public PriceEntity(long id, boolean isPrimary, String type, long price, TourEntity tourEntity, List<OrderDetailEntity> orderDetailEntities) {
         this.id = id;
+        this.isPrimary = isPrimary;
         this.type = type;
-        this.basePrice = basePrice;
         Price = price;
         this.tourEntity = tourEntity;
         this.orderDetailEntities = orderDetailEntities;
+    }
+
+    public PriceEntity(long id, String type, long price, TourEntity tourEntity,
+                       List<OrderDetailEntity> orderDetailEntities) {
+        this.id = id;
+        this.type = type;
+        Price = price;
+        this.tourEntity = tourEntity;
+        this.orderDetailEntities = orderDetailEntities;
+    }
+
+    public boolean isPrimary() {
+        return isPrimary;
+    }
+
+    public void setPrimary(boolean primary) {
+        isPrimary = primary;
     }
 
     public long getId() {
@@ -53,14 +71,6 @@ public class PriceEntity {
         this.type = type;
     }
 
-    public long getBasePrice() {
-        return basePrice;
-    }
-
-    public void setBasePrice(long basePrice) {
-        this.basePrice = basePrice;
-    }
-
     public long getPrice() {
         return Price;
     }
@@ -76,7 +86,6 @@ public class PriceEntity {
     public void setTourEntity(TourEntity tourEntity) {
         this.tourEntity = tourEntity;
     }
-
     public List<OrderDetailEntity> getOrderDetailEntities() {
         return orderDetailEntities;
     }

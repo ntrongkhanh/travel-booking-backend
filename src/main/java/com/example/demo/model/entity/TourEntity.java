@@ -22,6 +22,8 @@ public class TourEntity {
     private Date startTime;
     private Date endTime;
     private String time;
+    private String status;
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
     @Column(name = "avatarTour", columnDefinition = "TEXT")
     private String avatarTour;
@@ -30,10 +32,14 @@ public class TourEntity {
     @OneToMany(mappedBy = "tourEntity")
     private List<OrderTourEntity> orderTourEntities;
 
+
     @OneToMany(mappedBy = "tourEntity")
     private List<PriceEntity> priceEntities;
+
+
     @OneToMany(mappedBy = "tourEntity")
     private List<ScheduleEntity> scheduleEntities;
+
     @OneToMany(mappedBy = "tourEntity")
     private List<ImageEntity> imageEntities;
 
@@ -68,6 +74,36 @@ public class TourEntity {
         this.scheduleEntities = scheduleEntities;
         this.imageEntities = imageEntities;
         this.userEntities = userEntities;
+    }
+
+    public TourEntity(long id, String name, String codeTour, String startPlace, String endPlace, String province, String national, Date startTime, Date endTime, String time, String status, String description, String avatarTour, int discountPercent, List<OrderTourEntity> orderTourEntities, List<PriceEntity> priceEntities, List<ScheduleEntity> scheduleEntities, List<ImageEntity> imageEntities, List<UserEntity> userEntities) {
+        this.id = id;
+        this.name = name;
+        this.codeTour = codeTour;
+        this.startPlace = startPlace;
+        this.endPlace = endPlace;
+        this.province = province;
+        this.national = national;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.time = time;
+        this.status = status;
+        this.description = description;
+        this.avatarTour = avatarTour;
+        this.discountPercent = discountPercent;
+        this.orderTourEntities = orderTourEntities;
+        this.priceEntities = priceEntities;
+        this.scheduleEntities = scheduleEntities;
+        this.imageEntities = imageEntities;
+        this.userEntities = userEntities;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public long getId() {
@@ -174,6 +210,7 @@ public class TourEntity {
         this.discountPercent = discountPercent;
     }
 
+    @JsonIgnore
     public List<OrderTourEntity> getOrderTourEntities() {
         return orderTourEntities;
     }
@@ -212,5 +249,14 @@ public class TourEntity {
 
     public void setUserEntities(List<UserEntity> userEntities) {
         this.userEntities = userEntities;
+    }
+
+    public void addLike(UserEntity userEntity) {
+        this.userEntities.add(userEntity);
+
+    }
+
+    public void disLike(UserEntity userEntity) {
+        this.userEntities.remove(userEntity);
     }
 }

@@ -1,11 +1,20 @@
 package com.example.demo.service;
 
+import com.example.demo.model.LoginRequest;
 import com.example.demo.model.entity.UserEntity;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.security.jwt.JwtUtils;
+import com.example.demo.security.services.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.EntityManager;
 import java.util.HashMap;
@@ -19,26 +28,38 @@ public class UserService {
     private UserRepository repository;
     @Autowired
     private EntityManager entityManager;
+    @Autowired
+    AuthenticationManager authenticationManager;
+    @Autowired
+    private JwtUtils jwtUtils;
+    @Autowired
+    PasswordEncoder encoder;
+
     // get by id
-    public ResponseEntity<Map<String, Object>> getById(long id){
-        Optional<UserEntity> user=repository.findById(id);
-        Map<String, Object> response = new HashMap<>();
-        response.put("data", user);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<?> getById(long id) {
+        Optional<UserEntity> user = repository.findById(id);
+        return ResponseEntity.ok().body(user);
     }
+
     // create
-    public ResponseEntity<Map<String, Object>> create(UserEntity userEntity){
+    public ResponseEntity<?> create(UserEntity userEntity) {
         try {
-            userEntity=repository.save(userEntity);
-            Map<String, Object> response = new HashMap<>();
-            response.put("data", userEntity);
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            Optional<UserEntity> optionalUserEntity = repository.findByUsername(userEntity.getUsername());
+            if (optionalUserEntity.isPresent()) {
+                Map<String, String> response = new HashMap<>();
+                response.put("status", "ACCOUNT ALREADY EXIST");
+                return ResponseEntity.ok().body(response);
+            }
+            userEntity.setPassword(encoder.encode(userEntity.getPassword()));
+            userEntity = repository.save(userEntity);
+            return ResponseEntity.ok(userEntity);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     // update
-    public ResponseEntity<Map<String, Object>> update(UserEntity userEntity){
+    public ResponseEntity<?> update(UserEntity userEntity) {
         try {
             Optional<UserEntity> userEntityOptional = repository.findById(userEntity.getId());
             if (!userEntityOptional.isPresent())
@@ -49,25 +70,48 @@ public class UserService {
 //            if (list.size()==0)
 //                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
             userEntity.setPassword(userEntity.getPassword());
-            userEntity=repository.save(userEntity);
-            Map<String, Object> response = new HashMap<>();
-            response.put("data", userEntity);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            userEntity = repository.save(userEntity);
+            return ResponseEntity.ok().body(userEntity);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    public ResponseEntity<Map<String, Object>> login(UserEntity userEntity){
+
+    public ResponseEntity<?> login(LoginRequest loginRequest) {
         try {
-            List<UserEntity> list = repository.findByEmailAndPassword(userEntity.getEmail(), userEntity.getPassword());
-            if (list.size() == 0)
-                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-            list.get(0).setPassword("");
+            Optional<UserEntity> userEntityOptional = repository.findByUsername(loginRequest.getUsername());
+            if (!userEntityOptional.isPresent()){
+                Map<String, String> response = new HashMap<>();
+                response.put("status", "USERNAME NOT EXIST");
+                return ResponseEntity.ok().body(response);
+            }
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwt = jwtUtils.generateJwtToken(authentication);
+            userEntityOptional.get().setToken(jwt);
+            repository.save(userEntityOptional.get());
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
             Map<String, Object> response = new HashMap<>();
-            response.put("data", list.get(0));
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            response.put("token", jwt);
+            return ResponseEntity.ok().body(response);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public ResponseEntity<?> logout(UserEntity user) {
+        try {
+            Optional<UserEntity> userOptional = repository.findByUsername(user.getUsername());
+            if (!userOptional.isPresent())
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            userOptional.get().setToken("");
+            user = repository.save(userOptional.get());
+            Map<String, String> response = new HashMap<>();
+            response.put("status", "SUCCESS");
+            return ResponseEntity.ok().body(response);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

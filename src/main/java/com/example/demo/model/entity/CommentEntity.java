@@ -17,7 +17,7 @@ public class CommentEntity {
     private Date time;
 
     // user id 1 1
-
+    @JsonIgnore
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "user_id", nullable = true)

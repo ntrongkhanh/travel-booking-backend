@@ -2,7 +2,6 @@ package com.example.demo.service;
 
 import com.example.demo.model.entity.ImageEntity;
 import com.example.demo.model.entity.PostsEntity;
-import com.example.demo.model.entity.TourEntity;
 import com.example.demo.model.entity.UserEntity;
 import com.example.demo.repository.ImageRepository;
 import com.example.demo.repository.PostsRepository;
@@ -11,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import javax.persistence.EntityManager;
 import java.util.*;
 
@@ -24,56 +25,60 @@ public class PostsService {
     private UserRepository userRepository;
     @Autowired
     private EntityManager entityManager;
+
     // get all
-    public ResponseEntity<Map<String, Object>> getAll(){
+    public ResponseEntity<?> getAll() {
         try {
             List<PostsEntity> postsEntities = postsRepository.findAll();
-            Map<String, Object> response = new HashMap<>();
-            response.put("data", postsEntities);
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            return ResponseEntity.ok().body(postsEntities);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     // get by id
-    public ResponseEntity<Map<String, Object>> getById(long id){
+    public ResponseEntity<?> getById(long id) {
         try {
-            Optional<PostsEntity> postsEntity=postsRepository.findById(id);
-            Map<String, Object> response = new HashMap<>();
-            response.put("data", postsEntity);
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            Optional<PostsEntity> postsEntity = postsRepository.findById(id);
+            return ResponseEntity.ok().body(postsEntity);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     // create
-    public ResponseEntity<Map<String, Object>> create(PostsEntity postsEntity,int idUser){
+    public ResponseEntity<?> create(PostsEntity postsEntity, long idUser) {
 
         try {
-            List<ImageEntity> imageEntityList=new ArrayList<>();
-            for (int i=0;i<postsEntity.getImageEntities().size();i++){
-                imageEntityList.add(new ImageEntity(postsEntity.getImageEntities().get(i).getImage())) ;
+            List<ImageEntity> imageEntityList = new ArrayList<>();
+            for (int i = 0; i < postsEntity.getImageEntities().size(); i++) {
+                imageEntityList.add(new ImageEntity(postsEntity.getImageEntities().get(i).getImage()));
                 imageRepository.saveAndFlush(imageEntityList.get(i));
             }
-            UserEntity userEntity=entityManager.getReference(UserEntity.class,idUser);
+
+            UserEntity userEntity = entityManager.getReference(UserEntity.class, idUser);
             postsEntity.setUserEntity(userEntity);
             postsEntity.setImageEntities(imageEntityList);
             postsEntity.setCommentEntities(null);
 
-            postsEntity=postsRepository.save(postsEntity);
-            Map<String, Object> response = new HashMap<>();
-            response.put("data", postsEntity);
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            postsEntity = postsRepository.saveAndFlush(postsEntity);
+            for (ImageEntity i:imageEntityList) {
+                i.setPostsEntity(postsEntity);
+                imageRepository.saveAndFlush(i);
+            }
+            return ResponseEntity.ok().body(postsEntity);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     // update
-    public ResponseEntity<Map<String, Object>> update(){
+    public ResponseEntity<?> update() {
         return null;
     }
+
     // delete
-    public ResponseEntity<Map<String, Object>> delete(long id){
+    public ResponseEntity<?> delete(long id) {
 
         Optional<PostsEntity> postsEntity = postsRepository.findById(id);
         if (!postsEntity.isPresent())
@@ -82,15 +87,16 @@ public class PostsService {
         try {
             postsRepository.deleteById(postsEntity1.getId());
             postsRepository.deleteById(id);
-            Map<String, Object> response = new HashMap<>();
-            response.put("data", "Success");
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            Map<String, String> response = new HashMap<>();
+            response.put("status", "SUCCESS");
+            return ResponseEntity.ok().body(response);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     // like
-    public void like(long idUser,long idPost){
+    public void like(long idUser, long idPost) {
 
         try {
             Optional<PostsEntity> postsEntityOptional = postsRepository.findById(idPost);
@@ -98,20 +104,19 @@ public class PostsService {
                 return;
             Optional<UserEntity> userEntityOptional = userRepository.findById(idUser);
             if (!userEntityOptional.isPresent())
-                return ;
-            if (!userEntityOptional.get().getLikePosts().contains(postsEntityOptional))
-            {
+                return;
+            if (!userEntityOptional.get().getLikePosts().contains(postsEntityOptional)) {
                 postsEntityOptional.get().addLike(userEntityOptional.get());
                 userEntityOptional.get().addLikePosts(postsEntityOptional.get());
-            }else {
+            } else {
                 postsEntityOptional.get().disLike(userEntityOptional.get());
                 userEntityOptional.get().disLikePosts(postsEntityOptional.get());
             }
             postsRepository.save(postsEntityOptional.get());
             userRepository.save(userEntityOptional.get());
-            Map<String, Object> response = new HashMap<>();
+
         } catch (Exception e) {
-           return;
+            return;
         }
     }
 }
