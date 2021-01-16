@@ -86,7 +86,8 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "USERNAME KHÔNG TỒN TẠI");
         }
         if (!encoder.matches(loginRequest.getPassword(), userEntityOptional.get().getPassword()))
-            throw new ResponseStatusException(HttpStatus.OK, "MẬT KHẨU SAI");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "MẬT KHẨU SAI");
+
         try {
 
             Authentication authentication = authenticationManager.authenticate(
