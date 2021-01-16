@@ -1,20 +1,20 @@
 package com.example.demo.exception;
 
 public class BaseResponse {
-    private String error;
+    private String message;
 
     public BaseResponse() {
     }
 
-    public BaseResponse(String error) {
-        this.error = error;
+    public BaseResponse(String message) {
+        this.message = message;
     }
 
-    public String getError() {
-        return error;
+    public String getMessage() {
+        return message;
     }
 
-    public void setError(String error) {
-        this.error = error;
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

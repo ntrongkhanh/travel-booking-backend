@@ -47,9 +47,10 @@ public class UserService {
         try {
             Optional<UserEntity> optionalUserEntity = repository.findByUsername(userEntity.getUsername());
             if (optionalUserEntity.isPresent()) {
-                Map<String, String> response = new HashMap<>();
-                response.put("status", "ACCOUNT ALREADY EXIST");
-                return ResponseEntity.ok().body(response);
+//                Map<String, String> response = new HashMap<>();
+//                response.put("status", "ACCOUNT ALREADY EXIST");
+//                return ResponseEntity.ok().body(response);
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "TÀI KHOẢN ĐÃ TỒN TẠI");
             }
             userEntity.setPassword(encoder.encode(userEntity.getPassword()));
             userEntity = repository.save(userEntity);
@@ -82,10 +83,10 @@ public class UserService {
         try {
             Optional<UserEntity> userEntityOptional = repository.findByUsername(loginRequest.getUsername());
             if (!userEntityOptional.isPresent()){
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "USERNAME NOT EXIST");
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "USERNAME KHÔNG TỒN TẠI");
             }
             if (!encoder.matches(loginRequest.getPassword(), userEntityOptional.get().getPassword()))
-                throw new ResponseStatusException(HttpStatus.OK, "WRONG PASSWORD");
+                throw new ResponseStatusException(HttpStatus.OK, "MẬT KHẨU SAI");
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -108,9 +109,7 @@ public class UserService {
                 return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
             userOptional.get().setToken("");
             user = repository.save(userOptional.get());
-            Map<String, String> response = new HashMap<>();
-            response.put("status", "SUCCESS");
-            return ResponseEntity.ok().body(response);
+            throw new ResponseStatusException(HttpStatus.OK, "THÀNH CÔNG");
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }

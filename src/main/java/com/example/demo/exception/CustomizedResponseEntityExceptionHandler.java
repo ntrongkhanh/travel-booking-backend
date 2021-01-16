@@ -17,7 +17,7 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
   @ExceptionHandler(ResponseStatusException.class)
   public final ResponseEntity<BaseResponse> handleAllExceptions(ResponseStatusException ex, WebRequest request) {
     BaseResponse baseResponse = new BaseResponse();
-    baseResponse.setError(ex.getReason());
+    baseResponse.setMessage(ex.getReason());
     return new ResponseEntity<>(baseResponse, ex.getStatus());
   }
 }
