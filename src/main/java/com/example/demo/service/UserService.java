@@ -82,10 +82,10 @@ public class UserService {
         try {
             Optional<UserEntity> userEntityOptional = repository.findByUsername(loginRequest.getUsername());
             if (!userEntityOptional.isPresent()){
-                Map<String, String> response = new HashMap<>();
-                response.put("status", "USERNAME NOT EXIST");
-                return ResponseEntity.ok().body(response);
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "USERNAME NOT EXIST");
             }
+            if (!encoder.matches(loginRequest.getPassword(), userEntityOptional.get().getPassword()))
+                throw new ResponseStatusException(HttpStatus.OK, "WRONG PASSWORD");
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
