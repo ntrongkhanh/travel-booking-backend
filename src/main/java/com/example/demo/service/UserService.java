@@ -53,7 +53,7 @@ public class UserService {
             }
             userEntity.setPassword(encoder.encode(userEntity.getPassword()));
             userEntity = repository.save(userEntity);
-            return ResponseEntity.ok(userEntity);
+            return ResponseEntity.ok().body(userEntity);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
