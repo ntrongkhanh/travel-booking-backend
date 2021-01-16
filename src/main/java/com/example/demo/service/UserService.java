@@ -44,14 +44,15 @@ public class UserService {
 
     // create
     public ResponseEntity<?> create(UserEntity userEntity) {
-        try {
-            Optional<UserEntity> optionalUserEntity = repository.findByUsername(userEntity.getUsername());
-            if (optionalUserEntity.isPresent()) {
+        Optional<UserEntity> optionalUserEntity = repository.findByUsername(userEntity.getUsername());
+        if (optionalUserEntity.isPresent()) {
 //                Map<String, String> response = new HashMap<>();
 //                response.put("status", "ACCOUNT ALREADY EXIST");
 //                return ResponseEntity.ok().body(response);
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "TÀI KHOẢN ĐÃ TỒN TẠI");
-            }
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "TÀI KHOẢN ĐÃ TỒN TẠI");
+        }
+        try {
+
             userEntity.setPassword(encoder.encode(userEntity.getPassword()));
             userEntity = repository.save(userEntity);
             return ResponseEntity.ok().body(userEntity);
@@ -80,13 +81,14 @@ public class UserService {
     }
 
     public ResponseEntity<?> login(LoginRequest loginRequest) {
+        Optional<UserEntity> userEntityOptional = repository.findByUsername(loginRequest.getUsername());
+        if (!userEntityOptional.isPresent()){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "USERNAME KHÔNG TỒN TẠI");
+        }
+        if (!encoder.matches(loginRequest.getPassword(), userEntityOptional.get().getPassword()))
+            throw new ResponseStatusException(HttpStatus.OK, "MẬT KHẨU SAI");
         try {
-            Optional<UserEntity> userEntityOptional = repository.findByUsername(loginRequest.getUsername());
-            if (!userEntityOptional.isPresent()){
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "USERNAME KHÔNG TỒN TẠI");
-            }
-            if (!encoder.matches(loginRequest.getPassword(), userEntityOptional.get().getPassword()))
-                throw new ResponseStatusException(HttpStatus.OK, "MẬT KHẨU SAI");
+
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
