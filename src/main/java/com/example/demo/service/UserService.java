@@ -83,7 +83,7 @@ public class UserService {
     public ResponseEntity<?> login(LoginRequest loginRequest) {
         Optional<UserEntity> userEntityOptional = repository.findByUsername(loginRequest.getUsername());
         if (!userEntityOptional.isPresent()){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "USERNAME KHÔNG TỒN TẠI");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "TÀI KHOẢN KHÔNG TỒN TẠI");
         }
         if (!encoder.matches(loginRequest.getPassword(), userEntityOptional.get().getPassword()))
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "MẬT KHẨU SAI");
