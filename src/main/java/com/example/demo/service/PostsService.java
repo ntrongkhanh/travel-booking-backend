@@ -87,9 +87,7 @@ public class PostsService {
         try {
             postsRepository.deleteById(postsEntity1.getId());
             postsRepository.deleteById(id);
-            Map<String, String> response = new HashMap<>();
-            response.put("status", "SUCCESS");
-            return ResponseEntity.ok().body(response);
+            throw new ResponseStatusException(HttpStatus.OK, "THÀNH CÔNG");
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

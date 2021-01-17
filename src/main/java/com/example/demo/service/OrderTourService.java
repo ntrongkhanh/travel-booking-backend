@@ -64,9 +64,7 @@ public class OrderTourService {
                 orderDetailList.get(i).setOrderTourEntity(orderTourEntity);
             }
             orderDetailRepository.saveAll(orderDetailList);
-            Map<String, String> response = new HashMap<>();
-            response.put("status", "SUCCESS");
-            return ResponseEntity.ok().body(response);
+            throw new ResponseStatusException(HttpStatus.OK, "THÀNH CÔNG");
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
