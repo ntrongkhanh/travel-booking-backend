@@ -1,5 +1,6 @@
 package com.example.demo.controller.user;
 
+import com.example.demo.model.PostRequest;
 import com.example.demo.model.entity.PostsEntity;
 import com.example.demo.security.jwt.JwtUtils;
 import com.example.demo.service.PostsService;
@@ -23,7 +24,7 @@ public class UserPostsController {
     }
     // tạo post
     @RequestMapping(value = "/create", headers = "Accept=application/json", method = RequestMethod.POST)
-    public ResponseEntity<?> create(@RequestHeader("Authorization") String token,@Validated @RequestBody PostsEntity dto) {
+    public ResponseEntity<?> create(@RequestHeader("Authorization") String token,@Validated @RequestBody PostRequest dto) {
         return postsService.create(dto,jwtUtils.getUserByJwtToken(token).getId());
     }
     // sửa post

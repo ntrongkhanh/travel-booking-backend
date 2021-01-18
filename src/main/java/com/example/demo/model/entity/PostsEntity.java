@@ -18,6 +18,7 @@ public class PostsEntity {
     private int amount_like;
     private int amount_comment;
     private Date time;
+    private String nameUser;
     @JsonIgnore
     @OneToMany(mappedBy = "postsEntity")
     private List<CommentEntity> commentEntities;
@@ -47,6 +48,27 @@ public class PostsEntity {
         this.imageEntities = imageEntities;
         this.userEntity = userEntity;
         this.userEntities = userEntities;
+    }
+
+    public PostsEntity(long id, String content, int amount_like, int amount_comment, Date time, String nameUser, List<CommentEntity> commentEntities, List<ImageEntity> imageEntities, UserEntity userEntity, List<UserEntity> userEntities) {
+        this.id = id;
+        this.content = content;
+        this.amount_like = amount_like;
+        this.amount_comment = amount_comment;
+        this.time = time;
+        this.nameUser = nameUser;
+        this.commentEntities = commentEntities;
+        this.imageEntities = imageEntities;
+        this.userEntity = userEntity;
+        this.userEntities = userEntities;
+    }
+
+    public String getNameUser() {
+        return nameUser;
+    }
+
+    public void setNameUser(String nameUser) {
+        this.nameUser = nameUser;
     }
 
     public long getId() {

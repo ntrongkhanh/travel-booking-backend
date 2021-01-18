@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.model.PostRequest;
 import com.example.demo.model.entity.ImageEntity;
 import com.example.demo.model.entity.PostsEntity;
 import com.example.demo.model.entity.UserEntity;
@@ -47,20 +48,23 @@ public class PostsService {
     }
 
     // create
-    public ResponseEntity<?> create(PostsEntity postsEntity, long idUser) {
-
+    public ResponseEntity<?> create(PostRequest postRequest, long idUser) {
+            PostsEntity postsEntity=new PostsEntity();
         try {
             List<ImageEntity> imageEntityList = new ArrayList<>();
-            for (int i = 0; i < postsEntity.getImageEntities().size(); i++) {
-                imageEntityList.add(new ImageEntity(postsEntity.getImageEntities().get(i).getImage()));
+            for (int i = 0; i < postRequest.getImageEntities().size(); i++) {
+                imageEntityList.add(new ImageEntity(postRequest.getImageEntities().get(i).getImage()));
                 imageRepository.saveAndFlush(imageEntityList.get(i));
             }
 
             UserEntity userEntity = entityManager.getReference(UserEntity.class, idUser);
             postsEntity.setUserEntity(userEntity);
-            postsEntity.setImageEntities(imageEntityList);
-            postsEntity.setCommentEntities(null);
+            postsEntity.setContent(postRequest.getContent());
 
+            postsEntity.setImageEntities(imageEntityList);
+            postsEntity.setTime(postRequest.getTime());
+            postsEntity.setCommentEntities(null);
+            postsEntity.setNameUser(userEntity.getName());
             postsEntity = postsRepository.saveAndFlush(postsEntity);
             for (ImageEntity i:imageEntityList) {
                 i.setPostsEntity(postsEntity);
