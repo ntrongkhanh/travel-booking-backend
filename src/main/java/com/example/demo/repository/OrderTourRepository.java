@@ -9,6 +9,8 @@ import java.util.List;
 
 @Repository
 public interface OrderTourRepository extends JpaRepository<OrderTourEntity, Long> {
-    @Query(value = "select * from order_tour  where user_id=?1", nativeQuery = true)
-    public List<OrderTourEntity> findByUserEntity(long id);
+//    @Query(value = "select * from order_tour  where user_id=?1", nativeQuery = true)
+//    public List<OrderTourEntity> findByUserEntity(long id);
+
+    List<OrderTourEntity> findAllByUserEntityId(long id);
 }

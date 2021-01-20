@@ -1,9 +1,11 @@
 package com.example.demo.service;
 
 import com.example.demo.model.SearchTour;
+import com.example.demo.model.entity.OrderTourEntity;
 import com.example.demo.model.entity.PostsEntity;
 import com.example.demo.model.entity.TourEntity;
 import com.example.demo.model.entity.UserEntity;
+import com.example.demo.repository.OrderTourRepository;
 import com.example.demo.repository.ScheduleRepository;
 import com.example.demo.repository.TourRepository;
 import com.example.demo.repository.UserRepository;
@@ -28,6 +30,8 @@ public class TourService {
     private EntityManager entityManager;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private OrderTourRepository orderTourRepository;
 
     // get top
     public ResponseEntity<?> getTop() {
@@ -117,5 +121,17 @@ public class TourService {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    public ResponseEntity<?> getOder(long id) {
+        try {
+            System.out.printf("IDDDDDDDDDDDD: "+id);
+            List<OrderTourEntity> tourEntities = orderTourRepository.findAllByUserEntityId(id);
+            System.out.printf("22222222222222222: ");
+            Map<String,String > re=new HashMap<>();
+            re.put("lemg",tourEntities.size()+"");
 
+            return ResponseEntity.ok().body(re);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

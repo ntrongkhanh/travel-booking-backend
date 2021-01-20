@@ -17,9 +17,8 @@ public class OrderTourEntity {
     @OneToMany(mappedBy = "orderTourEntity")
     private List<OrderDetailEntity> orderDetailEntities;
 
-
     // tour id N 1
-    @JsonIgnore
+
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "tour_id", nullable = true)

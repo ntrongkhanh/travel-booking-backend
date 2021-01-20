@@ -1,5 +1,6 @@
 package com.example.demo.repository;
 
+import com.example.demo.model.entity.OrderTourEntity;
 import com.example.demo.model.entity.TourEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -30,4 +31,9 @@ public interface TourRepository extends JpaRepository<TourEntity, Long> {
 //
     @Query(value = "select * from tour, favorite as f where f.user_id=?1 and f.tour_id=tour.id",nativeQuery = true)
     public List<TourEntity> getTourLike(long id);
+
+
+
+    @Query(value = "select * from tour where f.user_id=?1 and f.tour_id=tour.id",nativeQuery = true)
+    public List<TourEntity> getTourOrder(long id);
 }

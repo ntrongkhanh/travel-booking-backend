@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.ContactRequest;
+import com.example.demo.model.OrderDetailRequest;
 import com.example.demo.model.entity.ContactEntity;
 import com.example.demo.model.entity.OrderDetailEntity;
 import com.example.demo.model.entity.OrderTourEntity;
@@ -27,10 +29,10 @@ public class OrderTourController {
         return service.getById(id);
     }
     @RequestMapping(value = "/create", headers = "Accept=application/json", method = RequestMethod.POST)
-    public ResponseEntity<?> create(@Validated @RequestBody List<OrderDetailEntity> orderDetailList,
-                                    @Validated @RequestBody ContactEntity contact,
-                                    @PathVariable long idTour,@PathVariable long idUser) {
-        return service.create(orderDetailList,contact,idTour,idUser);
+    public ResponseEntity<?> create(
+                                    @Validated @RequestBody ContactRequest contact,
+                                    @RequestParam() long idTour,@RequestParam long idUser) {
+        return service.create(contact.getOrderDetailRequests(),contact,idTour,idUser);
     }
 
 }
