@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -13,7 +14,7 @@ public class OrderTourEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private long total_price;
-
+    private Date orderDate;
     @OneToMany(mappedBy = "orderTourEntity")
     private List<OrderDetailEntity> orderDetailEntities;
 
@@ -48,6 +49,24 @@ public class OrderTourEntity {
         this.orderDetailEntities = orderDetailEntities;
         this.tourEntity = tourEntity;
         this.contactEntity = contactEntity;
+    }
+
+    public OrderTourEntity(long id, long total_price, Date orderDate, List<OrderDetailEntity> orderDetailEntities, TourEntity tourEntity, UserEntity userEntity, ContactEntity contactEntity) {
+        this.id = id;
+        this.total_price = total_price;
+        this.orderDate = orderDate;
+        this.orderDetailEntities = orderDetailEntities;
+        this.tourEntity = tourEntity;
+        this.userEntity = userEntity;
+        this.contactEntity = contactEntity;
+    }
+
+    public Date getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(Date orderDate) {
+        this.orderDate = orderDate;
     }
 
     public UserEntity getUserEntity() {

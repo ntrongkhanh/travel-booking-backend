@@ -55,6 +55,7 @@ public class OrderTourService {
                 contactRequest.setIdCardNumber(entity.getContactEntity().getIdCardNumber());
                 contactRequest.setEmail(entity.getContactEntity().getEmail());
                 orderResponse.setContactRequest(contactRequest);
+                orderResponse.setOrderDate(entity.getOrderDate());
 
                 list.add(orderResponse);
             }
@@ -117,6 +118,7 @@ public class OrderTourService {
         orderDetailRepository.saveAll(orderDetailList);
         orderTourEntity = entityManager.getReference(OrderTourEntity.class, orderTourEntity.getId());
         orderTourEntity.setTotal_price(total);
+        orderTourEntity.setOrderDate(new Date());
         System.out.printf("aaaaaaaaa4");
         orderTourEntity = orderTourRepository.save(orderTourEntity);
         System.out.printf("aaaaaaaaa5");
