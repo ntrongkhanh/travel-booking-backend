@@ -15,7 +15,7 @@ public class ContactEntity {
     private String email;
     private String phone;
     private String idCardNumber;
-    
+
 //    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 //    private OrderTourEntity orderTourEntity;
     @JsonIgnore
