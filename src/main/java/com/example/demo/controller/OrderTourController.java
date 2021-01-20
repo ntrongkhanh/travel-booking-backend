@@ -30,9 +30,9 @@ public class OrderTourController {
     }
     @RequestMapping(value = "/create", headers = "Accept=application/json", method = RequestMethod.POST)
     public ResponseEntity<?> create(
-                                    @Validated @RequestBody ContactRequest contact,
-                                    @RequestParam() long idTour,@RequestParam long idUser) {
-        return service.create(contact.getOrderDetailRequests(),contact,idTour,idUser);
+                                    @Validated @RequestBody ContactRequest contact
+                                    ) {
+        return service.create(contact.getOrderDetailRequests(),contact,contact.getIdTour(),contact.getIdUser());
     }
 
 }

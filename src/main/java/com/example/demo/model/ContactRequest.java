@@ -9,6 +9,8 @@ public class ContactRequest {
     private String email;
     private String phone;
     private String idCardNumber;
+    private long idUser;
+    private long idTour;
     private List<OrderDetailRequest> orderDetailRequests;
 
     public ContactRequest() {
@@ -21,6 +23,22 @@ public class ContactRequest {
         this.phone = phone;
         this.idCardNumber = idCardNumber;
         this.orderDetailRequests = orderDetailRequests;
+    }
+
+    public long getIdTour() {
+        return idTour;
+    }
+
+    public void setIdTour(long idTour) {
+        this.idTour = idTour;
+    }
+
+    public long getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(long idUser) {
+        this.idUser = idUser;
     }
 
     public long getId() {
