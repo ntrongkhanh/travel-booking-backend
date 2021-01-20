@@ -11,6 +11,8 @@ public class OrderResponse {
     private String urlImage;
     private ContactRequest contactRequest;
     private Date orderDate;
+    private Date date;
+    private String place;
 
     public OrderResponse() {
     }
@@ -34,6 +36,47 @@ public class OrderResponse {
         this.urlImage = urlImage;
         this.contactRequest = contactRequest;
         this.orderDate = orderDate;
+    }
+
+    public OrderResponse(long id, long total_price, String tourName, int amount, long price, String urlImage, ContactRequest contactRequest, Date orderDate, Date date) {
+        this.id = id;
+        this.total_price = total_price;
+        this.tourName = tourName;
+        this.amount = amount;
+        this.price = price;
+        this.urlImage = urlImage;
+        this.contactRequest = contactRequest;
+        this.orderDate = orderDate;
+        this.date = date;
+    }
+
+    public OrderResponse(long id, long total_price, String tourName, int amount, long price, String urlImage, ContactRequest contactRequest, Date orderDate, Date date, String place) {
+        this.id = id;
+        this.total_price = total_price;
+        this.tourName = tourName;
+        this.amount = amount;
+        this.price = price;
+        this.urlImage = urlImage;
+        this.contactRequest = contactRequest;
+        this.orderDate = orderDate;
+        this.date = date;
+        this.place = place;
+    }
+
+    public String getPlace() {
+        return place;
+    }
+
+    public void setPlace(String place) {
+        this.place = place;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public Date getOrderDate() {

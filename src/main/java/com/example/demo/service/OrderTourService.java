@@ -56,7 +56,8 @@ public class OrderTourService {
                 contactRequest.setEmail(entity.getContactEntity().getEmail());
                 orderResponse.setContactRequest(contactRequest);
                 orderResponse.setOrderDate(entity.getOrderDate());
-
+                orderResponse.setDate(entity.getTourEntity().getStartTime());
+                orderResponse.setPlace(entity.getTourEntity().getStartPlace());
                 list.add(orderResponse);
             }
 
