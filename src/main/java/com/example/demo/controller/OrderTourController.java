@@ -26,7 +26,9 @@ public class OrderTourController {
         return service.getById(id);
     }
     @RequestMapping(value = "/create", headers = "Accept=application/json", method = RequestMethod.POST)
-    public ResponseEntity<?> create(@Validated @RequestBody List<OrderDetailEntity> orderDetailList,@Validated @RequestBody ContactEntity contact,@Validated @RequestBody long idTour,@Validated @RequestBody long idUser) {
+    public ResponseEntity<?> create(@Validated @RequestBody List<OrderDetailEntity> orderDetailList,
+                                    @Validated @RequestBody ContactEntity contact,
+                                    @Validated @RequestBody long idTour,@Validated @RequestBody long idUser) {
         return service.create(orderDetailList,contact,idTour,idUser);
     }
 

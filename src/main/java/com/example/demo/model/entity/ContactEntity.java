@@ -1,5 +1,7 @@
 package com.example.demo.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -13,10 +15,10 @@ public class ContactEntity {
     private String email;
     private String phone;
     private String idCardNumber;
-
+    
 //    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 //    private OrderTourEntity orderTourEntity;
-
+    @JsonIgnore
     @OneToOne(mappedBy = "contactEntity")
     private OrderTourEntity orderTourEntity;
 
